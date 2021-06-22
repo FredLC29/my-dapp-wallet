@@ -1,8 +1,48 @@
+import { useState, useCallback, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import Web3 from 'web3'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
+  const [isConnectedWeb3, setIsConnectedWeb3] = useState(false)
+  const [accounts, setAccounts] = useState([])
+  const [balance, setBalance] = useState(0)
+  const [web3] = useState(new Web3(Web3.givenProvider || "ws://localhost:8545"))
+  const [weiToSend, setWeiToSend] = useState(0)
+  const [addressToSend, setAddressToSend] = useState("")
+
+  const connectToWeb3 = useCallback(
+    async () => {
+      if(window.ethereum) {
+        try {
+          await window.ethereum.request({method: 'eth_requestAccounts'})
+
+          setIsConnectedWeb3(true)
+        } catch (err) {
+          console.error(err)
+        }
+      } else {
+        alert("Install Metamask")
+      }
+    }
+  )
+
+  useEffect(() => {
+    const getAccounts = async () => setAccounts(await web3.eth.getAccounts())
+    const getBalance = async () => setBalance(await web3.eth.getBalance(accounts[0]))
+
+    if (accounts.length == 0) getAccounts()
+    if (accounts.length > 0) getBalance()
+  }, [isConnectedWeb3, accounts])
+
+  const sendEth = useCallback(
+    async () => {
+      await web3.eth.sendTransaction({ from: accounts[0], to: addressToSend, value: weiToSend })
+    },
+    [accounts, addressToSend, weiToSend]
+  )
+
   return (
     <div className={styles.container}>
       <Head>
@@ -13,57 +53,23 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
+          Welcome to my dApp
         </h1>
+        <h2>Connect Metamask</h2>
+        {
+          isConnectedWeb3
+            ? <p>Connected</p>
+            : <button onClick={connectToWeb3}>Connect to web3</button>
+        }
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
+        <h2>Solds Ethereum</h2>
+        <p>{accounts[0]}</p>
+        <p>{balance}wei</p>
+        <h2>Send ETH</h2>
+        <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth in wei" />
+        <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" />
+        <button onClick={sendEth}>Send Eth</button>
       </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
     </div>
   )
 }
