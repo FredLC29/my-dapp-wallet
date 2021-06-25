@@ -80,8 +80,8 @@ export default function Home() {
 
         <div className={styles.sendEth}>
           <p>Amount Ethers : {balance} Eth</p>
-          <div><label>Address :</label> <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth" /></div>
-          <div><label>Amount :</label> <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" /></div>
+          <div><label>Address :</label> <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" /></div>
+          <div><label>Amount :</label> <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth" /></div>
           <button onClick={sendEth} className={styles.button}>Envoyer</button>
         </div>
       </main>
