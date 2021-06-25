@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+
 import Web3 from 'web3'
+
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -11,6 +13,7 @@ export default function Home() {
   const [web3] = useState(new Web3(Web3.givenProvider || "ws://localhost:8545"))
   const [weiToSend, setWeiToSend] = useState(0)
   const [addressToSend, setAddressToSend] = useState("")
+  const [providerName, setProviderName] = useState("")
 
   const connectToWeb3 = useCallback(
     async () => {
@@ -30,15 +33,26 @@ export default function Home() {
 
   useEffect(() => {
     const getAccounts = async () => setAccounts(await web3.eth.getAccounts())
-    const getBalance = async () => setBalance(await web3.eth.getBalance(accounts[0]))
+    const getBalance = async () => {
+      const balanceWEI = web3.eth.getBalance(accounts[0])
+      setBalance( web3.utils.fromWei((await balanceWEI).toString(),'Ether'))
+    }
+
+    const getProviderName = async () => setProviderName(await web3.eth.net.getNetworkType())
 
     if (accounts.length == 0) getAccounts()
     if (accounts.length > 0) getBalance()
-  }, [isConnectedWeb3, accounts])
+    if (accounts.length > 0) getProviderName()
+    }, 
+    [isConnectedWeb3, accounts, providerName]
+  )
 
   const sendEth = useCallback(
     async () => {
-      await web3.eth.sendTransaction({ from: accounts[0], to: addressToSend, value: weiToSend })
+      await web3.eth.sendTransaction({ 
+        from: accounts[0], 
+        to: addressToSend, 
+        value: web3.utils.toWei(weiToSend, 'ether')})
     },
     [accounts, addressToSend, weiToSend]
   )
@@ -53,22 +67,22 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to my dApp
+          Wallet dApp
         </h1>
-        <h2>Connect Metamask</h2>
+        <p>{providerName}</p>
         {
           isConnectedWeb3
-            ? <p>Connected</p>
+            ? <p><a href={`https://${providerName}.etherscan.io/address/${accounts[0]}`} target="_blank"/><img src='./images/etherscan.jpg' alt='Etherscan' class='image_etherscan'></img></p>
             : <button onClick={connectToWeb3}>Connect to web3</button>
         }
 
-        <h2>Solds Ethereum</h2>
         <p>{accounts[0]}</p>
-        <p>{balance}wei</p>
-        <h2>Send ETH</h2>
-        <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth in wei" />
+
+        <p>Amount Ethers : {balance} Eth</p>
+
+        <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth" />
         <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" />
-        <button onClick={sendEth}>Send Eth</button>
+        <button onClick={sendEth}>Envoyer</button>
       </main>
     </div>
   )
