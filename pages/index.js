@@ -5,7 +5,6 @@ import Image from 'next/image'
 import Web3 from 'web3'
 
 import styles from '../styles/Home.module.css'
-import Img from '../images/etherscan.png'
 
 export default function Home() {
   const [isConnectedWeb3, setIsConnectedWeb3] = useState(false)
@@ -74,7 +73,7 @@ export default function Home() {
           <p className={styles.providerName}>{providerName}</p>
           {
             isConnectedWeb3
-              ? <p><a href={`https://rinkeby.etherscan.io/address/0x3584198A073170abc5f9593F9C9E5AB17231151a`} target="_blank"/><img src={Img} alt='Etherscan' class='image_etherscan'></img></p>
+              ? <p><a href={`https://${providerName}.etherscan.io/address/${accounts[0]}`} target="_blank"><img src="https://etherscan.io/images/brandassets/etherscan-logo-circle.png" alt='Etherscan' className={styles.imgEth}></img></a></p>
               : <button onClick={connectToWeb3} className={styles.button}>Connect to web3</button>
           }
         </div>
@@ -86,6 +85,12 @@ export default function Home() {
           <button onClick={sendEth} className={styles.button}>Envoyer</button>
         </div>
       </main>
+
+      <footer className={styles.footer}>
+        <p>Frédéric LE COIDIC</p>
+        <a href="https://github.com/FredLC29/my-dapp-wallet" target="_blank"><img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" title="GitHub" className={styles.imgEth}>
+        </img></a>
+      </footer>
     </div>
   )
 }

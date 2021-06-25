@@ -19,7 +19,22 @@
     padding-right: 40px;
   }
 
+  .imgEth {
+    width: 50px;
+	height: 50px;
+  }
+
   .button {
     border-radius: 10px;
     padding: 10px;
+  }
+
+  .footer {
+    font-weight: bold;
+    background-color: #20B2AA;
+    text-align: center;
+    height: 140px;
+    padding: 0;
+    margin:0;
+    color: #03224c;
   }
