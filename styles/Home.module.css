@@ -1,0 +1,25 @@
+.main {
+    padding: 5rem 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+  }
+
+  .provider {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .providerName {
+    margin-right: 20px;
+    border: solid;
+    padding: 5px;
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  .button {
+    border-radius: 10px;
+    padding: 10px;
+  }

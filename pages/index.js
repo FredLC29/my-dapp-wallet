@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Web3 from 'web3'
 
 import styles from '../styles/Home.module.css'
+import Img from '../images/etherscan.png'
 
 export default function Home() {
   const [isConnectedWeb3, setIsConnectedWeb3] = useState(false)
@@ -66,23 +67,24 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Wallet dApp
-        </h1>
-        <p>{providerName}</p>
-        {
-          isConnectedWeb3
-            ? <p><a href={`https://${providerName}.etherscan.io/address/${accounts[0]}`} target="_blank"/><img src='./images/etherscan.jpg' alt='Etherscan' class='image_etherscan'></img></p>
-            : <button onClick={connectToWeb3}>Connect to web3</button>
-        }
+        
+        <h1> Wallet dApp </h1>
+        
+        <div className={styles.provider}>
+          <p className={styles.providerName}>{providerName}</p>
+          {
+            isConnectedWeb3
+              ? <p><a href={`https://rinkeby.etherscan.io/address/0x3584198A073170abc5f9593F9C9E5AB17231151a`} target="_blank"/><img src={Img} alt='Etherscan' class='image_etherscan'></img></p>
+              : <button onClick={connectToWeb3} className={styles.button}>Connect to web3</button>
+          }
+        </div>
 
-        <p>{accounts[0]}</p>
-
-        <p>Amount Ethers : {balance} Eth</p>
-
-        <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth" />
-        <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" />
-        <button onClick={sendEth}>Envoyer</button>
+        <div className={styles.sendEth}>
+          <p>Amount Ethers : {balance} Eth</p>
+          <div><label>Address :</label> <input type="number" onChange={e => setWeiToSend(e.target.value)} placeholder="Eth" /></div>
+          <div><label>Amount :</label> <input type="text" onChange={e => setAddressToSend(e.target.value)} placeholder="address" /></div>
+          <button onClick={sendEth} className={styles.button}>Envoyer</button>
+        </div>
       </main>
     </div>
   )
